@@ -29,8 +29,11 @@ public class DbConnector {
         Connection postgres = null;
         Class.forName(postgres_driver); 
         postgres = DriverManager.getConnection(postgresql_url, postgres_utilisateur, postgres_mdp);
+        System.out.println("connexion avec succes");
         return postgres;
     }
+    
+   
 }
     
  
