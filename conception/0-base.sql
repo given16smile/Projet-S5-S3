@@ -1,2 +1,2 @@
 create database boulangerie;
-/c boulangerie
+\c boulangerie
