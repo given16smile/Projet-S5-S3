@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dao;
 
 import java.sql.Connection;
@@ -10,54 +5,56 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-/**
- *
- * @author Tsiky
- */
-public class Unite {
-    String id;
-    String nom;
-    String description;
 
-    public Unite() {}
+public class Fournisseur {
+    private String id;
+    private String contact;
+    private String nom;
 
-    public Unite(String id, String nom, String description) {
+    public Fournisseur() {}
+
+    public Fournisseur(String id, String contact, String nom) {
         setId(id);
+        setContact(contact);
         setNom(nom);
-        setDescription(description);
     }
+
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
     public String getNom() {
         return nom;
     }
+
     public void setNom(String nom) {
         this.nom = nom;
     }
 
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void insert () throws Exception{
+    public void insert() throws Exception {
         Connection connection = null;
-         PreparedStatement statement = null;
+        PreparedStatement statement = null;
         try {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "INSERT INTO unite(nom,description)"
-                + " VALUES (?,?)"
+                "INSERT INTO fournisseur(id, contact, nom) VALUES (?, ?, ?)"
             );
-            statement.setString(1, nom);
-            statement.setString(2, description);
+            statement.setString(1, id);
+            statement.setString(2, contact);
+            statement.setString(3, nom);
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
@@ -67,10 +64,9 @@ public class Unite {
             if (statement != null) statement.close();
             if (connection != null) connection.close();
         }
-
     }
 
-        public void find() throws Exception {
+    public void find() throws Exception {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -78,30 +74,23 @@ public class Unite {
         try {
             connection = DbConnector.connect();
             statement = connection.prepareStatement(
-                "SELECT * FROM unite"
-                + " WHERE id = ?"
+                "SELECT * FROM fournisseur WHERE id = ?"
             );
             statement.setString(1, id);
             resultSet = statement.executeQuery();
 
-            while (resultSet.next()) {
+            if (resultSet.next()) {
+                contact = resultSet.getString("contact");
                 nom = resultSet.getString("nom");
-                description = resultSet.getString("description");
             }
         } finally {
-            if (resultSet != null) {
-                resultSet.close();
-            }
-            if (statement != null) {
-                statement.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
+            if (resultSet != null) resultSet.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
         }
     }
 
-
+    // Méthode pour mettre à jour un fournisseur
     public void update() throws Exception {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -109,13 +98,10 @@ public class Unite {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "UPDATE unite"
-                + " SET nom = ?"
-                + " SET description = ?"
-                + " WHERE id = ?"
+                "UPDATE fournisseur SET contact = ?, nom = ? WHERE id = ?"
             );
-            statement.setString(1, nom);
-            statement.setString(2, description);
+            statement.setString(1, contact);
+            statement.setString(2, nom);
             statement.setString(3, id);
             statement.executeUpdate();
             connection.commit();
@@ -135,8 +121,7 @@ public class Unite {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "DELETE FROM unite"
-                + " WHERE id = ?"
+                "DELETE FROM fournisseur WHERE id = ?"
             );
             statement.setString(1, id);
             statement.executeUpdate();
@@ -150,45 +135,30 @@ public class Unite {
         }
     }
 
-     public static ArrayList<Unite> getAll() throws Exception {
-        ArrayList<Unite> unites = new ArrayList<Unite>();
-
+    public static ArrayList<Fournisseur> getAll() throws Exception {
+        ArrayList<Fournisseur> fournisseurs = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
             connection = DbConnector.connect();
-            statement = connection.prepareStatement(
-                "SELECT * FROM unite"
-            );
+            statement = connection.prepareStatement("SELECT * FROM fournisseur");
             resultSet = statement.executeQuery();
 
-            String id;
-            String name;
-            String description;
             while (resultSet.next()) {
-                id = resultSet.getString("id");
-                name = resultSet.getString("nom");
-                description = resultSet.getString("description");
+                String id = resultSet.getString("id");
+                String contact = resultSet.getString("contact");
+                String nom = resultSet.getString("nom");
 
-                unites.add(
-                    new Unite(id, name, description)
-                );
+                fournisseurs.add(new Fournisseur(id, contact, nom));
             }
         } finally {
-            if (resultSet != null) {
-                resultSet.close();
-            }
-            if (statement != null) {
-                statement.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
+            if (resultSet != null) resultSet.close();
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
         }
 
-        return unites;
+        return fournisseurs;
     }
-
 }

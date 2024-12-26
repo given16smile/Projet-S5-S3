@@ -1,3 +1,5 @@
+drop database boulangerie;
+
 -- Réinitialiser toutes les tables et leurs séquences associées
 TRUNCATE TABLE fournisseur_ingredient RESTART IDENTITY CASCADE;
 TRUNCATE TABLE vente RESTART IDENTITY CASCADE;
@@ -9,6 +11,10 @@ TRUNCATE TABLE fournisseur RESTART IDENTITY CASCADE;
 TRUNCATE TABLE categorie RESTART IDENTITY CASCADE;
 TRUNCATE TABLE unite RESTART IDENTITY CASCADE;
 
--- TRUNCATE TABLE <table_name> : Cette commande supprime toutes les lignes de la table spécifiée sans supprimer sa structure.
--- RESTART IDENTITY : Réinitialise les séquences des colonnes de type SERIAL (les identifiants auto-incrémentés) pour recommencer à 1.
--- CASCADE : Cette option garantit que les tables qui dépendent d'autres tables par des clés étrangères sont également vidées, afin de respecter les contraintes de relation entre les tables.
+-- Instructions :
+-- 1. TRUNCATE TABLE <table_name> :
+--    Supprime toutes les lignes de la table spécifiée sans toucher à sa structure.
+-- 2. RESTART IDENTITY :
+--    Réinitialise toutes les séquences associées aux colonnes `SERIAL` ou utilisant des séquences spécifiques.
+-- 3. CASCADE :
+--    S'assure que toutes les tables dépendantes (via des clés étrangères) sont également vidées pour respecter les relations.
