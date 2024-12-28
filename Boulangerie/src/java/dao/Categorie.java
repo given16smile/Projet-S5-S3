@@ -5,23 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class Ingredient {
+public class Categorie {
     private String id;
     private String nom;
-    private int seuilAlerte;
-    private String id_unite;
 
-    // Constructeurs
-    public Ingredient() {}
+    public Categorie() {}
 
-    public Ingredient(String id, String nom, int seuilAlerte, String id_unite) throws Exception {
-        setId(id);
-        setNom(nom);
-        setSeuilAlerte(seuilAlerte);
-        setId_unite(id_unite);
+    public Categorie(String id, String nom) {
+        this.id = id;
+        this.nom = nom;
     }
 
-    // Getters et Setters
     public String getId() {
         return id;
     }
@@ -38,38 +32,16 @@ public class Ingredient {
         this.nom = nom;
     }
 
-    public int getSeuilAlerte() {
-        return seuilAlerte;
-    }
-
-    public void setSeuilAlerte(int seuilAlerte) throws Exception {
-        if (seuilAlerte < 0) {
-            throw new Exception("Le seuil d'alerte doit être positif.");
-        }
-        this.seuilAlerte = seuilAlerte;
-    }
-
-    public String getId_unite() {
-        return id_unite;
-    }
-
-    public void setId_unite(String id_unite) {
-        this.id_unite = id_unite;
-    }
-
-    // Méthode pour insérer un ingrédient
-    public void insert() throws Exception {
+    public void insert() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "INSERT INTO ingredient (nom, seuil_alerte, id_unite) VALUES (?, ?, ?)"
+                "INSERT INTO categorie(nom) VALUES (?)"
             );
             statement.setString(1, nom);
-            statement.setInt(2, seuilAlerte);
-            statement.setString(3, id_unite);
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
@@ -80,14 +52,13 @@ public class Ingredient {
                     throw new DaoException("Erreur lors du rollback de la transaction", rollbackException);
                 }
             }
-            throw new DaoException("Erreur lors de l'insertion de l'ingrédient", e);
+            throw new DaoException("Erreur lors de l'insertion de la catégorie", e);
         } finally {
-            close(connection, statement);
+            closeResources(statement, connection);
         }
     }
 
-    // Méthode pour récupérer un ingrédient par son ID
-    public void find() throws Exception {
+    public void find() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -95,40 +66,38 @@ public class Ingredient {
         try {
             connection = DbConnector.connect();
             statement = connection.prepareStatement(
-                "SELECT * FROM ingredient WHERE id = ?"
+                "SELECT * FROM categorie WHERE id = ?"
             );
             statement.setString(1, id);
             resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
                 nom = resultSet.getString("nom");
-                seuilAlerte = resultSet.getInt("seuil_alerte");
-                id_unite = resultSet.getString("id_unite");
             } else {
-                throw new DaoException("Ingrédient introuvable avec l'ID " + id);
+                throw new DaoException("Catégorie avec l'id " + id + " non trouvée.");
             }
         } catch (Exception e) {
-            throw new DaoException("Erreur lors de la recherche de l'ingrédient", e);
+            throw new DaoException("Erreur lors de la recherche de la catégorie", e);
         } finally {
-            close(connection, statement, resultSet);
+            closeResources(resultSet, statement, connection);
         }
     }
 
-    // Méthode pour mettre à jour un ingrédient
-    public void update() throws DaoException, Exception {
+    public void update() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "UPDATE ingredient SET nom = ?, seuil_alerte = ?, id_unite = ? WHERE id = ?"
+                "UPDATE categorie SET nom = ? WHERE id = ?"
             );
             statement.setString(1, nom);
-            statement.setInt(2, seuilAlerte);
-            statement.setString(3, id_unite);
-            statement.setString(4, id);
-            statement.executeUpdate();
+            statement.setString(2, id);
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new DaoException("Aucune catégorie trouvée pour l'ID " + id + " à mettre à jour.");
+            }
             connection.commit();
         } catch (Exception e) {
             if (connection != null) {
@@ -138,24 +107,26 @@ public class Ingredient {
                     throw new DaoException("Erreur lors du rollback de la transaction", rollbackException);
                 }
             }
-            throw new DaoException("Erreur lors de la mise à jour de l'ingrédient", e);
+            throw new DaoException("Erreur lors de la mise à jour de la catégorie", e);
         } finally {
-            close(connection, statement);
+            closeResources(statement, connection);
         }
     }
 
-    // Méthode pour supprimer un ingrédient
-    public void delete() throws Exception {
+    public void delete() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "DELETE FROM ingredient WHERE id = ?"
+                "DELETE FROM categorie WHERE id = ?"
             );
             statement.setString(1, id);
-            statement.executeUpdate();
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new DaoException("Aucune catégorie trouvée pour l'ID " + id + " à supprimer.");
+            }
             connection.commit();
         } catch (Exception e) {
             if (connection != null) {
@@ -165,49 +136,45 @@ public class Ingredient {
                     throw new DaoException("Erreur lors du rollback de la transaction", rollbackException);
                 }
             }
-            throw new DaoException("Erreur lors de la suppression de l'ingrédient", e);
+            throw new DaoException("Erreur lors de la suppression de la catégorie", e);
         } finally {
-            close(connection, statement);
+            closeResources(statement, connection);
         }
     }
 
-    // Méthode pour récupérer tous les ingrédients
-    public static ArrayList<Ingredient> getAll() throws Exception {
-        ArrayList<Ingredient> ingredients = new ArrayList<>();
+    public static ArrayList<Categorie> getAll() throws DaoException {
+        ArrayList<Categorie> categories = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
             connection = DbConnector.connect();
-            statement = connection.prepareStatement("SELECT * FROM ingredient");
+            statement = connection.prepareStatement("SELECT * FROM categorie");
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String id = resultSet.getString("id");
-                String nom = resultSet.getString("nom");
-                int seuilAlerte = resultSet.getInt("seuil_alerte");
-                String id_unite = resultSet.getString("id_unite");
-
-                ingredients.add(new Ingredient(id, nom, seuilAlerte, id_unite));
+                categories.add(new Categorie(
+                    resultSet.getString("id"),
+                    resultSet.getString("nom")
+                ));
             }
         } catch (Exception e) {
-            throw new DaoException("Erreur lors de la récupération des ingrédients", e);
+            throw new DaoException("Erreur lors de la récupération des catégories", e);
         } finally {
-            close(connection, statement, resultSet);
+            closeResources(resultSet, statement, connection);
         }
 
-        return ingredients;
+        return categories;
     }
 
-    private static void close(AutoCloseable... resources) throws Exception {
+    private static void closeResources(AutoCloseable... resources) {
         for (AutoCloseable resource : resources) {
             try {
                 if (resource != null) {
                     resource.close();
                 }
             } catch (Exception e) {
-                throw e;
             }
         }
     }

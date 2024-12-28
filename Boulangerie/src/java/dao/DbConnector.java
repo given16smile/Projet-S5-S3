@@ -31,6 +31,24 @@ public class DbConnector {
         postgres = DriverManager.getConnection(postgresql_url, postgres_utilisateur, postgres_mdp);
         return postgres;
     }
+<<<<<<< Updated upstream
+=======
+    
+   /**
+     * Ferme une connexion à la base de données.
+     * @param connection La connexion à fermer
+     */
+    public static void disconnect(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+                System.out.println("Déconnexion réussie");
+            } catch (SQLException e) {
+                System.err.println("Erreur lors de la fermeture de la connexion : " + e.getMessage());
+            }
+        }
+    }
+>>>>>>> Stashed changes
 }
     
  

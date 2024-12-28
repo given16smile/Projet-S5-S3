@@ -5,29 +5,35 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class Ingredient {
+public class Fournisseur {
     private String id;
+    private String contact;
     private String nom;
-    private int seuilAlerte;
-    private String id_unite;
 
-    // Constructeurs
-    public Ingredient() {}
+    // Constructors
+    public Fournisseur() {}
 
-    public Ingredient(String id, String nom, int seuilAlerte, String id_unite) throws Exception {
+    public Fournisseur(String id, String contact, String nom) {
         setId(id);
+        setContact(contact);
         setNom(nom);
-        setSeuilAlerte(seuilAlerte);
-        setId_unite(id_unite);
     }
 
-    // Getters et Setters
+    // Getters and Setters
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public String getNom() {
@@ -38,38 +44,19 @@ public class Ingredient {
         this.nom = nom;
     }
 
-    public int getSeuilAlerte() {
-        return seuilAlerte;
-    }
-
-    public void setSeuilAlerte(int seuilAlerte) throws Exception {
-        if (seuilAlerte < 0) {
-            throw new Exception("Le seuil d'alerte doit être positif.");
-        }
-        this.seuilAlerte = seuilAlerte;
-    }
-
-    public String getId_unite() {
-        return id_unite;
-    }
-
-    public void setId_unite(String id_unite) {
-        this.id_unite = id_unite;
-    }
-
-    // Méthode pour insérer un ingrédient
-    public void insert() throws Exception {
+    // Insert the fournisseur into the database
+    public void insert() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "INSERT INTO ingredient (nom, seuil_alerte, id_unite) VALUES (?, ?, ?)"
+                "INSERT INTO fournisseur(id, contact, nom) VALUES (?, ?, ?)"
             );
-            statement.setString(1, nom);
-            statement.setInt(2, seuilAlerte);
-            statement.setString(3, id_unite);
+            statement.setString(1, id);
+            statement.setString(2, contact);
+            statement.setString(3, nom);
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
@@ -80,54 +67,49 @@ public class Ingredient {
                     throw new DaoException("Erreur lors du rollback de la transaction", rollbackException);
                 }
             }
-            throw new DaoException("Erreur lors de l'insertion de l'ingrédient", e);
+            throw new DaoException("Erreur lors de l'insertion du fournisseur", e);
         } finally {
             close(connection, statement);
         }
     }
 
-    // Méthode pour récupérer un ingrédient par son ID
-    public void find() throws Exception {
+    // Find a fournisseur by id
+    public void find() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-
         try {
             connection = DbConnector.connect();
             statement = connection.prepareStatement(
-                "SELECT * FROM ingredient WHERE id = ?"
+                "SELECT * FROM fournisseur WHERE id = ?"
             );
             statement.setString(1, id);
             resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
+                contact = resultSet.getString("contact");
                 nom = resultSet.getString("nom");
-                seuilAlerte = resultSet.getInt("seuil_alerte");
-                id_unite = resultSet.getString("id_unite");
-            } else {
-                throw new DaoException("Ingrédient introuvable avec l'ID " + id);
             }
         } catch (Exception e) {
-            throw new DaoException("Erreur lors de la recherche de l'ingrédient", e);
+            throw new DaoException("Erreur lors de la recherche du fournisseur", e);
         } finally {
             close(connection, statement, resultSet);
         }
     }
 
-    // Méthode pour mettre à jour un ingrédient
-    public void update() throws DaoException, Exception {
+    // Update an existing fournisseur
+    public void update() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "UPDATE ingredient SET nom = ?, seuil_alerte = ?, id_unite = ? WHERE id = ?"
+                "UPDATE fournisseur SET contact = ?, nom = ? WHERE id = ?"
             );
-            statement.setString(1, nom);
-            statement.setInt(2, seuilAlerte);
-            statement.setString(3, id_unite);
-            statement.setString(4, id);
+            statement.setString(1, contact);
+            statement.setString(2, nom);
+            statement.setString(3, id);
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
@@ -138,21 +120,21 @@ public class Ingredient {
                     throw new DaoException("Erreur lors du rollback de la transaction", rollbackException);
                 }
             }
-            throw new DaoException("Erreur lors de la mise à jour de l'ingrédient", e);
+            throw new DaoException("Erreur lors de la mise à jour du fournisseur", e);
         } finally {
             close(connection, statement);
         }
     }
 
-    // Méthode pour supprimer un ingrédient
-    public void delete() throws Exception {
+    // Delete a fournisseur from the database
+    public void delete() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "DELETE FROM ingredient WHERE id = ?"
+                "DELETE FROM fournisseur WHERE id = ?"
             );
             statement.setString(1, id);
             statement.executeUpdate();
@@ -165,49 +147,47 @@ public class Ingredient {
                     throw new DaoException("Erreur lors du rollback de la transaction", rollbackException);
                 }
             }
-            throw new DaoException("Erreur lors de la suppression de l'ingrédient", e);
+            throw new DaoException("Erreur lors de la suppression du fournisseur", e);
         } finally {
             close(connection, statement);
         }
     }
 
-    // Méthode pour récupérer tous les ingrédients
-    public static ArrayList<Ingredient> getAll() throws Exception {
-        ArrayList<Ingredient> ingredients = new ArrayList<>();
+    // Fetch all fournisseurs from the database
+    public static ArrayList<Fournisseur> getAll() throws DaoException {
+        ArrayList<Fournisseur> fournisseurs = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-
         try {
             connection = DbConnector.connect();
-            statement = connection.prepareStatement("SELECT * FROM ingredient");
+            statement = connection.prepareStatement("SELECT * FROM fournisseur");
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 String id = resultSet.getString("id");
+                String contact = resultSet.getString("contact");
                 String nom = resultSet.getString("nom");
-                int seuilAlerte = resultSet.getInt("seuil_alerte");
-                String id_unite = resultSet.getString("id_unite");
 
-                ingredients.add(new Ingredient(id, nom, seuilAlerte, id_unite));
+                fournisseurs.add(new Fournisseur(id, contact, nom));
             }
         } catch (Exception e) {
-            throw new DaoException("Erreur lors de la récupération des ingrédients", e);
+            throw new DaoException("Erreur lors de la récupération des fournisseurs", e);
         } finally {
             close(connection, statement, resultSet);
         }
-
-        return ingredients;
+        return fournisseurs;
     }
 
-    private static void close(AutoCloseable... resources) throws Exception {
+    // Utility method to close resources
+    private static void close(AutoCloseable... resources) {
         for (AutoCloseable resource : resources) {
             try {
                 if (resource != null) {
                     resource.close();
                 }
             } catch (Exception e) {
-                throw e;
+                // Log the exception if needed, but do not rethrow as it is closing
             }
         }
     }
