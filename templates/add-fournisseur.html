@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Ajouter Fournisseur</title>
+  <link rel="stylesheet" href="assets/css/main.min.css">
+
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 80%;
+      max-width: 1000px;
+    }
+
+    .image-container {
+      width: 40%;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .form-wrapper {
+      width: 60%;
+      max-width: 500px;
+      padding: 20px;
+    }
+
+    .card {
+      padding: 20px;
+    }
+
+    .form-actions-footer {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="form-container">
+    <div class="image-container">
+      <h3>Photos</h3>
+      <img src="assets/images/default-image.png" alt="Image" style="width: 100%; height: auto; border-radius: 10px;">
+      <p>Vous pouvez ajouter une photo ici.</p>
+    </div>
+    <div class="form-wrapper">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Nouveau Fournisseur</div>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="contactFournisseur" class="form-label">Contact</label>
+            <input type="text" class="form-control" id="contactFournisseur" placeholder="Entrez le contact (numérique)" required>
+          </div>
+          <div class="mb-3">
+            <label for="emailFournisseur" class="form-label">Email</label>
+            <input type="email" class="form-control" id="emailFournisseur" placeholder="Entrez l'email du fournisseur" required>
+          </div>
+          <div class="mb-3">
+            <label for="nomFournisseur" class="form-label">Nom</label>
+            <input type="text" class="form-control" id="nomFournisseur" placeholder="Entrez le nom du fournisseur" required>
+          </div>
+          <div class="form-actions-footer">
+            <button class="btn btn-light">Annuler</button>
+            <button class="btn btn-success">Ajouter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

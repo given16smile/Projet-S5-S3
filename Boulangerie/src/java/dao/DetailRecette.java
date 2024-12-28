@@ -5,21 +5,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class Fournisseur {
+public class DetailRecette {
     private String id;
-    private String contact;
-    private String nom;
+    private double qte;
+    private String idIngredient;
+    private String idRecette;
 
-    // Constructors
-    public Fournisseur() {}
-
-    public Fournisseur(String id, String contact, String nom) {
-        setId(id);
-        setContact(contact);
-        setNom(nom);
+    // Constructor with setters
+    public DetailRecette(String id, double qte, String idIngredient, String idRecette) throws DaoException {
+        try {
+            setId(id);
+            setQte(qte);
+            setIdIngredient(idIngredient);
+            setIdRecette(idRecette);
+        } catch (Exception e) {
+            throw new DaoException("Erreur lors de la création du DetailRecette", e);
+        }
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -28,23 +31,34 @@ public class Fournisseur {
         this.id = id;
     }
 
-    public String getContact() {
-        return contact;
+    public double getQte() {
+        return qte;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setQte(double qte) throws DaoException {
+        if (qte <= 0) {
+            throw new DaoException("La quantité doit être supérieure à 0");
+        }
+        this.qte = qte;
     }
 
-    public String getNom() {
-        return nom;
+    public String getIdIngredient() {
+        return idIngredient;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setIdIngredient(String idIngredient) {
+        this.idIngredient = idIngredient;
     }
 
-    // Insert the fournisseur into the database
+    public String getIdRecette() {
+        return idRecette;
+    }
+
+    public void setIdRecette(String idRecette) {
+        this.idRecette = idRecette;
+    }
+
+    // Insert the detail recette into the database
     public void insert() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -52,11 +66,13 @@ public class Fournisseur {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "INSERT INTO fournisseur(id, contact, nom) VALUES (?, ?, ?)"
+                "INSERT INTO detailRecette(id, qte, id_ingredient, id_recette) "
+                + "VALUES (?, ?, ?, ?)"
             );
             statement.setString(1, id);
-            statement.setString(2, contact);
-            statement.setString(3, nom);
+            statement.setDouble(2, qte);
+            statement.setString(3, idIngredient);
+            statement.setString(4, idRecette);
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
@@ -67,37 +83,13 @@ public class Fournisseur {
                     throw new DaoException("Erreur lors du rollback de la transaction", rollbackException);
                 }
             }
-            throw new DaoException("Erreur lors de l'insertion du fournisseur", e);
+            throw new DaoException("Erreur lors de l'insertion du détail de recette", e);
         } finally {
             close(connection, statement);
         }
     }
 
-    // Find a fournisseur by id
-    public void find() throws DaoException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = DbConnector.connect();
-            statement = connection.prepareStatement(
-                "SELECT * FROM fournisseur WHERE id = ?"
-            );
-            statement.setString(1, id);
-            resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                contact = resultSet.getString("contact");
-                nom = resultSet.getString("nom");
-            }
-        } catch (Exception e) {
-            throw new DaoException("Erreur lors de la recherche du fournisseur", e);
-        } finally {
-            close(connection, statement, resultSet);
-        }
-    }
-
-    // Update an existing fournisseur
+    // Update an existing detail recette
     public void update() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -105,11 +97,12 @@ public class Fournisseur {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "UPDATE fournisseur SET contact = ?, nom = ? WHERE id = ?"
+                "UPDATE detailRecette SET qte = ?, id_ingredient = ?, id_recette = ? WHERE id = ?"
             );
-            statement.setString(1, contact);
-            statement.setString(2, nom);
-            statement.setString(3, id);
+            statement.setDouble(1, qte);
+            statement.setString(2, idIngredient);
+            statement.setString(3, idRecette);
+            statement.setString(4, id);
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
@@ -120,13 +113,13 @@ public class Fournisseur {
                     throw new DaoException("Erreur lors du rollback de la transaction", rollbackException);
                 }
             }
-            throw new DaoException("Erreur lors de la mise à jour du fournisseur", e);
+            throw new DaoException("Erreur lors de la mise à jour du détail de recette", e);
         } finally {
             close(connection, statement);
         }
     }
 
-    // Delete a fournisseur from the database
+    // Delete a detail recette
     public void delete() throws DaoException {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -134,7 +127,7 @@ public class Fournisseur {
             connection = DbConnector.connect();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(
-                "DELETE FROM fournisseur WHERE id = ?"
+                "DELETE FROM detailRecette WHERE id = ?"
             );
             statement.setString(1, id);
             statement.executeUpdate();
@@ -147,36 +140,36 @@ public class Fournisseur {
                     throw new DaoException("Erreur lors du rollback de la transaction", rollbackException);
                 }
             }
-            throw new DaoException("Erreur lors de la suppression du fournisseur", e);
+            throw new DaoException("Erreur lors de la suppression du détail de recette", e);
         } finally {
             close(connection, statement);
         }
     }
 
-    // Fetch all fournisseurs from the database
-    public static ArrayList<Fournisseur> getAll() throws DaoException {
-        ArrayList<Fournisseur> fournisseurs = new ArrayList<>();
+    // Fetch all detail recettes
+    public static ArrayList<DetailRecette> getAll() throws DaoException {
+        ArrayList<DetailRecette> detailRecettes = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = DbConnector.connect();
-            statement = connection.prepareStatement("SELECT * FROM fournisseur");
+            statement = connection.prepareStatement("SELECT * FROM detailRecette");
             resultSet = statement.executeQuery();
-
             while (resultSet.next()) {
-                String id = resultSet.getString("id");
-                String contact = resultSet.getString("contact");
-                String nom = resultSet.getString("nom");
-
-                fournisseurs.add(new Fournisseur(id, contact, nom));
+                detailRecettes.add(new DetailRecette(
+                    resultSet.getString("id"),
+                    resultSet.getDouble("qte"),
+                    resultSet.getString("id_ingredient"),
+                    resultSet.getString("id_recette")
+                ));
             }
         } catch (Exception e) {
-            throw new DaoException("Erreur lors de la récupération des fournisseurs", e);
+            throw new DaoException("Erreur lors de la récupération des détails de recette", e);
         } finally {
             close(connection, statement, resultSet);
         }
-        return fournisseurs;
+        return detailRecettes;
     }
 
     // Utility method to close resources
