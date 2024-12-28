@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Étape 2: Ajouter Ingrédients</title>
+  <link rel="stylesheet" href="assets/css/main.min.css">
+
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 80%;
+      max-width: 1000px;
+    }
+
+    .image-container {
+      width: 40%;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .form-wrapper {
+      width: 60%;
+      max-width: 500px;
+      padding: 20px;
+    }
+
+    .card {
+      padding: 20px;
+    }
+
+    .form-actions-footer {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .quantite-group {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="form-container">
+    <div class="image-container">
+      <h3>Photos</h3>
+      <img src="assets/images/default-image.png" alt="Image" style="width: 100%; height: auto; border-radius: 10px;">
+      <p>Vous pouvez ajouter une photo ici.</p>
+    </div>
+    <div class="form-wrapper">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Ajouter des Ingrédients</div>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="ajouter_recette_etape2.php">
+            <input type="hidden" name="recetteId" value="ID_RECETTE"> <!-- Passer l'ID de la recette depuis l'étape précédente -->
+
+            <div class="mb-3">
+              <label for="ingredientRecette" class="form-label">Ingrédients</label>
+              <select class="form-control" id="ingredientRecette" name="ingredientRecette[]" required multiple>
+                <option value="oeuf">Œuf</option>
+                <option value="beurre">Beurre</option>
+                <option value="farine">Farine</option>
+                <option value="sucre">Sucre</option>
+                <option value="oeuf">Chocolat</option>
+                <option value="beurre">Sel</option>
+                <option value="farine">Levure</option>
+                <!-- Ajouter d'autres ingrédients ici -->
+              </select>
+            </div>
+
+            <!-- Dynamically generated quantity fields will be added here -->
+            <div id="quantiteFields"></div>
+
+            <div class="form-actions-footer">
+              <button type="submit" class="btn btn-success">Ajouter Ingrédients</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Function to handle dynamic quantity fields based on ingredient selection
+    document.getElementById('ingredientRecette').addEventListener('change', function() {
+      var selectedIngredients = Array.from(this.selectedOptions).map(option => option.value);
+      var quantiteFieldsContainer = document.getElementById('quantiteFields');
+      
+      // Clear previous quantity fields
+      quantiteFieldsContainer.innerHTML = '';
+
+      // Add a quantity field for each selected ingredient
+      selectedIngredients.forEach(function(ingredient) {
+        var div = document.createElement('div');
+        div.classList.add('quantite-group');
+        div.innerHTML = `
+          <label for="quantite-${ingredient}" class="form-label">${ingredient.charAt(0).toUpperCase() + ingredient.slice(1)}</label>
+          <input type="text" class="form-control" id="quantite-${ingredient}" name="quantiteRecette[]" placeholder="Ex: 3 unités" required>
+        `;
+        quantiteFieldsContainer.appendChild(div);
+      });
+    });
+  </script>
+
+</body>
+
+</html>

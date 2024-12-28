@@ -1,0 +1,16 @@
+.sidebar-menu {
+    max-height: 100vh; /* Limite la hauteur du menu à la hauteur de l'écran */
+    overflow-y: auto;  /* Permet le défilement vertical */
+    padding-right: 10px; /* Un peu d'espace sur le côté droit pour le défilement */
+  }
+  
+  .sidebarMenuScroll {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+  
+  .sidebar-submenu {
+    padding-left: 20px;
+  }
+  

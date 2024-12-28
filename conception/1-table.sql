@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 CREATE TABLE unite(
    id VARCHAR(50) ,
    nom VARCHAR(50)  NOT NULL,
@@ -18,11 +16,14 @@ CREATE TABLE categorie(
 CREATE TABLE fournisseur(
    id VARCHAR(50) ,
    contact VARCHAR(50) NOT NULL CHECK (contact ~ '^[0-9]+$'),
-   nom VARCHAR(255)  NOT NULL,
+   email VARCHAR(255) NOT NULL CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),  -- Validation du format email
+   nom VARCHAR(255) NOT NULL,
    PRIMARY KEY(id),
    UNIQUE(contact),
-   UNIQUE(nom)
+   UNIQUE(nom),
+   UNIQUE(email)  -- Assurer que l'email soit unique
 );
+
 
 CREATE TABLE ingredient(
    id VARCHAR(50) ,
@@ -118,4 +119,3 @@ CREATE TABLE stock_indgredient(
    FOREIGN KEY(id_fournisseur) REFERENCES fournisseur(id),
    FOREIGN KEY(id_ingredient) REFERENCES ingredient(id)
 );
->>>>>>> Stashed changes
