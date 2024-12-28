@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Meta -->
+  <meta name="description" content="Gestion moderne et intuitive pour votre boulangerie. Simplifiez vos tâches quotidiennes.">
+  <meta name="author" content="Boulangerie Créative">
+  <link rel="canonical" href="https://www.boulangerie-creative.com">
+  <meta property="og:url" content="https://www.boulangerie-creative.com">
+  <meta property="og:title" content="Boulangerie Créative - Tableau de bord simplifié">
+  <meta property="og:description" content="Gérez vos produits, ventes et opérations facilement avec notre interface intuitive.">
+  <meta property="og:type" content="Website">
+  <meta property="og:site_name" content="Boulangerie Créative">
+  <link rel="shortcut icon" href="assets/images/bread-icon.svg">
+
+  <!-- Title -->
+  <title>Boulangerie Créative - Administrateur</title>
+
+  <!-- Bootstrap font icons css -->
+  <link rel="stylesheet" href="assets/fonts/bootstrap/bootstrap-icons.css">
+
+  <!-- Main css -->
+  <link rel="stylesheet" href="assets/css/main.min.css">
+</head>
+
+<body>
+  <!-- Page wrapper start -->
+  <div class="page-wrapper">
+
+    <!-- Include header.html (side menu and sidebar) -->
+    <div id="header">
+      <!-- Code of the sidebar and brand will be included here from header.html -->
+      <!-- You can use an iframe or include with JavaScript or server-side rendering -->
+      <!-- Example if including as iframe: -->
+      <!-- <iframe src="header.html" frameborder="0" style="width: 100%; height: 100%;"></iframe> -->
+    </div>
+
+    <!-- Main container start -->
+    <div class="main-container">
+
+      <!-- Page header starts -->
+      <div class="page-header">
+        <div class="toggle-sidebar" id="toggle-sidebar"><i class="bi bi-list"></i></div>
+      </div>
+      <!-- Page header ends -->
+
+      <!-- Content area -->
+      <div class="content-area">
+        <h2>Bienvenue dans le tableau de bord de l'administrateur</h2>
+        <p>Gérez vos produits, ventes, unités, catégories, fournisseurs et autres paramètres ici.</p>
+
+        <!-- Table for Unités -->
+        <h3>Gestion des Unités</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Description</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Sample data - to be dynamically generated -->
+            <tr>
+              <td>1</td>
+              <td>Grammes</td>
+              <td>Unité de mesure pour le poids</td>
+              <td>
+                <a href="modifier_unite.html" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+                <a href="supprimer_unite.html" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
+              </td>
+            </tr>
+            <!-- Repeat similar rows for each item -->
+          </tbody>
+        </table>
+
+        <!-- Table for Catégories -->
+        <h3>Gestion des Catégories</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Sample data - to be dynamically generated -->
+            <tr>
+              <td>1</td>
+              <td>Boulangerie</td>
+              <td>
+                <a href="modifier_categorie.html" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+                <a href="supprimer_categorie.html" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
+              </td>
+            </tr>
+            <!-- Repeat similar rows for each item -->
+          </tbody>
+        </table>
+
+        <!-- Table for Fournisseurs -->
+        <h3>Gestion des Fournisseurs</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Contact</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Sample data - to be dynamically generated -->
+            <tr>
+              <td>1</td>
+              <td>Fournisseur A</td>
+              <td>123456789</td>
+              <td>
+                <a href="modifier_fournisseur.html" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
+                <a href="supprimer_fournisseur.html" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
+              </td>
+            </tr>
+            <!-- Repeat similar rows for each item -->
+          </tbody>
+        </table>
+
+        <!-- Other sections for Ingredients, Recettes, and Productions can be added here similarly -->
+        
+      </div>
+      <!-- Content area ends -->
+
+    </div>
+    <!-- Main container end -->
+
+    <!-- Footer -->
+    <footer style="text-align: center; margin-top: 20px;">
+      <p style="font-size: 0.9em;">© 2024 Boulangerie Créative. Tous droits réservés.</p>
+      <p style="font-size: 0.8em;">Contactez-nous : <a href="mailto:contact@boulangerie-creative.com">contact@boulangerie-creative.com</a></p>
+    </footer>
+    <!-- Footer ends -->
+
+  </div>
+  <!-- Page wrapper end -->
+
+  <!-- Required JavaScript Files -->
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
