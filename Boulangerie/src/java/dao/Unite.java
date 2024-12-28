@@ -15,21 +15,21 @@ import java.util.ArrayList;
  * @author Tsiky
  */
 public class Unite {
-    int id;
+    String id;
     String nom;
     String description;
 
     public Unite() {}
 
-    public Unite(int id, String nom, String description) {
+    public Unite(String id, String nom, String description) {
         setId(id);
         setNom(nom);
         setDescription(description);
     }
-    public int getId() {
+    public String getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     public String getNom() {
@@ -81,7 +81,7 @@ public class Unite {
                 "SELECT * FROM unite"
                 + " WHERE id = ?"
             );
-            statement.setInt(1, id);
+            statement.setString(1, id);
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -116,7 +116,7 @@ public class Unite {
             );
             statement.setString(1, nom);
             statement.setString(2, description);
-            statement.setInt(3, id);
+            statement.setString(3, id);
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
@@ -138,7 +138,7 @@ public class Unite {
                 "DELETE FROM unite"
                 + " WHERE id = ?"
             );
-            statement.setInt(1, id);
+            statement.setString(1, id);
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
@@ -164,11 +164,11 @@ public class Unite {
             );
             resultSet = statement.executeQuery();
 
-            int id;
+            String id;
             String name;
             String description;
             while (resultSet.next()) {
-                id = resultSet.getInt("id");
+                id = resultSet.getString("id");
                 name = resultSet.getString("nom");
                 description = resultSet.getString("description");
 
